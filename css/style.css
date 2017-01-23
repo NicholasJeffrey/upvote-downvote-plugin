@@ -1,1 +1,55 @@
+/*-----------------------------------------------------------------------------------*/
+/* Thumbs Ratings Styles */
+/*-----------------------------------------------------------------------------------*/
 
+.thumbs-rating-container{
+	
+	padding:1em 0;
+	display: block;
+}
+
+.thumbs-rating-container span{
+	
+	cursor: pointer;
+}
+
+.thumbs-rating-container span:before{
+	
+	content: attr(data-text);
+}
+
+.thumbs-rating-container span:hover{
+	
+	color: #dddddd;
+}
+
+.thumbs-rating-container .thumbs-rating-up, .thumbs-rating-container .thumbs-rating-down{
+	
+	padding: 0.5em;
+	color: white;
+} 
+
+.thumbs-rating-container .thumbs-rating-up{
+		
+	background: #a4c346;
+}
+
+.thumbs-rating-container .thumbs-rating-down{
+	
+	background: #c84848;
+}
+
+.thumbs-rating-container .thumbs-rating-already-voted{
+	
+	padding-top: 1em;
+	font-size: 0.9em;
+	display: none;
+	
+	-webkit-transition: (all 0.3s);
+    transition: (all 0.3s);
+}
+
+.thumbs-rating-container .thumbs-rating-already-voted:before{
+	
+	content: attr(data-text);
+}
