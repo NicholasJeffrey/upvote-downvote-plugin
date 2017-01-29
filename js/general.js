@@ -1,4 +1,4 @@
-function thumbs_rating_vote(ID, type)
+function thumbs_rating_vote(obj, ID, type)
 {
 	// For the LocalStorage 
 	
@@ -7,56 +7,82 @@ function thumbs_rating_vote(ID, type)
 	var container = '#thumbs-rating-' + ID;
 	
 	// Check if the LocalStorage value exist. If do nothing.
+	 localStorage.setItem(itemName, true);
+	 
+	var currentSelection = jQuery(obj);
+	var selection;
+	var alternate;
 	
-	if (!localStorage.getItem(itemName)){
+	if(type == 1){
+		var oldTypeItemName = "thumbsrating" + ID + "-2";
+		var newTypeItemName = "thumbsrating" + ID + "-1";
+	} else if (type == 2){
+		var oldTypeItemName = "thumbsrating" + ID + "-1";
+		var  newTypeItemName = "thumbsrating" + ID + "-2";
+	}
 	
-		// Set HTML5 LocalStorage so the user can not vote again unless he clears it.
-                                               
-        localStorage.setItem(itemName, true);
-
-        // Set the localStorage type as well
-			
-		var typeItemName = "thumbsrating" + ID + "-" + type;
-		localStorage.setItem(typeItemName, true);
+	if(currentSelection.parent().hasClass("lb-voted")){
+		selection = 0;
+		localStorage.removeItem(oldTypeItemName, false);
+		localStorage.setItem(newTypeItemName, false);
+	} else{
+		selection = 1;
+		localStorage.removeItem(oldTypeItemName, false);
+		localStorage.setItem(newTypeItemName, true);
+	}
 	
-		// Data for the Ajax Request
+	
+	if(currentSelection.parent().hasClass("thumbs-rating-up")){
+		if(currentSelection.parent().parent().find('.thumbs-rating-down.lb-voted').length > 0){
+			alternate = 1;
+		}
 		
-		var data = {
+	} else if(currentSelection.parent().hasClass("thumbs-rating-down")){
+		if(currentSelection.parent().parent().find('.thumbs-rating-up.lb-voted').length > 0){
+			alternate = 1;
+		}
+	}
+	
+	var data = {
 			action: 'thumbs_rating_add_vote',
 			postid: ID,
 			type: type,
+			selection: selection,
+			alternate : alternate,
 			nonce: thumbs_rating_ajax.nonce
 		};
-			
-		jQuery.post(thumbs_rating_ajax.ajax_url, data, function(response) {			
-			
-			var object = jQuery(container);
-			
-			jQuery(container).html('');
-			
-			jQuery(container).append(response);
-			
-			// Remove the class and ID so we don't have 2 DIVs with the same ID
-			
-			jQuery(object).removeClass('thumbs-rating-container');
-			jQuery(object).attr('id', '');
-			
-			// Add the class to the clicked element
-			
-			var new_container = '#thumbs-rating-' + ID;
-			
-			// Check the type
-			
-			if( type == 1){ thumbs_rating_class = ".thumbs-rating-up"; }
-			else{ thumbs_rating_class = ".thumbs-rating-down";  }
-			
-			jQuery(new_container +  thumbs_rating_class ).addClass('thumbs-rating-voted');
 	
-		});
-	}else{
-
-		// Display message if we detect LocalStorage
+	jQuery.post(thumbs_rating_ajax.ajax_url, data, function(response) {	
 		
-		jQuery('#thumbs-rating-' + ID + ' .thumbs-rating-already-voted').fadeIn().css('display', 'block');
-	}
+		var object = jQuery(container);
+		
+		jQuery(container).html('');
+		
+		jQuery(container).append(response);
+		
+		// Remove the class and ID so we don't have 2 DIVs with the same ID
+		
+		jQuery(object).removeClass('thumbs-rating-container');
+		jQuery(object).attr('id', '');
+		
+		// Add the class to the clicked element
+		
+		var new_container = '#thumbs-rating-' + ID;
+		
+		// Check the type
+		
+		if( type == 1){ 
+			thumbs_rating_class = ".thumbs-rating-up"; 
+		}
+		else{ 
+			thumbs_rating_class = ".thumbs-rating-down";  
+		}
+		
+		if (selection == 1){
+			jQuery(new_container + ' ' +  thumbs_rating_class ).addClass('thumbs-rating-voted lb-voted');
+		} 
+
+	});
 }
+
+
